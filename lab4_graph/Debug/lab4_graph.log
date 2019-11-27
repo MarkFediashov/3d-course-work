@@ -1,0 +1,8 @@
+﻿  lab4_graph.cpp
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(299,50): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(299,34): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(302,49): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(302,33): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(304,48): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\repos\lab4_graph\lab4_graph\RenderObject.h(304,32): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+  lab4_graph.vcxproj -> C:\Users\Mark_Dev\source\repos\lab4_graph\Debug\lab4_graph.exe
