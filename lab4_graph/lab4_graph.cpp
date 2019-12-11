@@ -9,9 +9,9 @@
 
 const int AmountObjects = 5;
 
-float angle1 = 0;      //стартовое положение камеры
+float angle1 = 30;      //стартовое положение камеры
 float angle2 = 20;
-float r = 40;
+float r = 60;
 float zoom = 0.002;
 
 ViewPoint* camera = new ViewPoint(angle1, angle2, r, zoom);
@@ -27,26 +27,27 @@ float view_matrix[4][4] = {
 		{0,				0,						R,					1}
 };
 
-const int FREQUENT = 150;
+const int FREQUENT = 85;
+
+RenderableObject shape5 = load_model("spacecraft_module.obj");
 
 RenderableObject shape1 = load_model("left_panel_near.obj");     // и только потоооом объект
 RenderableObject shape2 = load_model("left_panel_near.obj");     // и только потоооом объект
 RenderableObject shape3 = load_model("right_panel_near.obj");     // и только потоооом объект
 RenderableObject shape4 = load_model("right_panel_near.obj");     // и только потоооом объект
 
-RenderableObject shape5 = load_model("spacecraft_module.obj");
 RenderableObject objects[AmountObjects] = { shape1, shape2, shape3, shape4, shape5 };
 
-float max1 = objects[0].findMax(AxisDirection::Y);
+float maxY1 = objects[0].findMax(AxisDirection::Y);
 
-float max2 = objects[1].findMax(AxisDirection::Y); //вращаем вокруг максимального игрика
+float maxY2 = objects[1].findMax(AxisDirection::Y); //вращаем вокруг максимального игрика
 
-float min3 = objects[2].findMin(AxisDirection::Y);
+float minY3 = objects[2].findMin(AxisDirection::Y);
 
-float min4 = objects[3].findMax(AxisDirection::Y); //вращаем вокруг максимального игрика
+float maxY4 = objects[3].findMax(AxisDirection::Y); //вращаем вокруг максимального игрика
 
 
-RenderedPolygon* projections[AmountObjects];
+RenderedPolygon* projections[AmountObjects]; //массив указателей на отпроецированные полигоны 
 
 static Point3D minO2(0, 0, 0);
 static Point3D maxO4(0, 0, 0);
@@ -112,7 +113,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-
+inline void globalDraw(HDC buffer, HWND hWnd)
+{
+	update_view_matrix(view_matrix, angle1, angle2, r);
+	camera = new ViewPoint(angle1, angle2, r, zoom); //создаём объект камеры
+	for (int i = 0; i < AmountObjects; i++)
+	{
+		projections[i] = objects[i].render(camera, view_matrix);
+		for (int j = 0; j < objects[i].getSize(); j++)
+		{
+			projections[i][j].goToScreenCoord();
+			projections[i][j].drawPolygon(&buffer);
+		}
+		delete[] projections[i];
+	}
+	BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, buffer, 0, 0, SRCCOPY);
+	BitBlt(buffer, 0, 0, 1600, 1200, buffer, 0, 0, WHITENESS);
+	delete camera;
+}
 
 //
 //  ФУНКЦИЯ: MyRegisterClass()
@@ -165,7 +183,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   SetTimer(hWnd, NULL, 750, NULL);//установка таймера
+   SetTimer(hWnd, NULL, FREQUENT, NULL);//установка таймера
 
    return TRUE;
 }
@@ -187,32 +205,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_TIMER:
 	{
-		HDC buffer = CreateCompatibleDC(GetDC(hWnd));
-		HBITMAP fon = (HBITMAP)LoadImage(NULL, L"empty.bmp", IMAGE_BITMAP,
+		static HDC buffer = CreateCompatibleDC(GetDC(hWnd));
+		static HBITMAP fon = (HBITMAP)LoadImage(NULL, L"empty.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE);
 
 		SelectObject(buffer, fon);
 
-		
-
-		const float angle = 1 * PI / 180;
-		static float current_angle = PI / 180;
+		const float angle = 0.35 * PI / 180;
+		static float current_angle = 0;
 
 		if (current_angle < PI / 2)
 		{
 
-			Transform::moveOn(Point3D(0, -max1, 0), objects);
+			Transform::moveOn(Point3D(0, -maxY1, 0), objects);
 			Transform::rotate(-angle, AxisDirection::X, objects);
-			Transform::moveOn(Point3D(0, max1, 0), objects);
+			Transform::moveOn(Point3D(0, maxY1, 0), objects);
 
-			Transform::moveOn(Point3D(0, -max2, 0), objects + 1);
+			Transform::moveOn(Point3D(0, -maxY2, 0), objects + 1);
 			Transform::rotate(angle, AxisDirection::X, objects + 1);
-			Transform::moveOn(Point3D(0, max2, 0), objects + 1);
+			Transform::moveOn(Point3D(0, maxY2, 0), objects + 1);
 
-			float mx = objects[0].findMin(AxisDirection::X);
 			float my = objects[0].findMin(AxisDirection::Y);
 			float mz = objects[0].findMin(AxisDirection::Z);
-			Point3D currentMinLeft(mx, my, mz);
+			Point3D currentMinLeft(0, my, mz);
 
 			Transform::moveOn(Point3D(0,
 				2 * (currentMinLeft.y - minO2.y), 2 * (currentMinLeft.z - minO2.z)), objects + 1);
@@ -221,13 +236,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			//---------------------------------------------------------------
 
-			Transform::moveOn(Point3D(0, -min3, 0), objects + 2);
+			Transform::moveOn(Point3D(0, -minY3, 0), objects + 2);
 			Transform::rotate(angle, AxisDirection::X, objects + 2);
-			Transform::moveOn(Point3D(0, min3, 0), objects + 2);
+			Transform::moveOn(Point3D(0, minY3, 0), objects + 2);
 
-			Transform::moveOn(Point3D(0, -min3, 0), objects + 3);
+			Transform::moveOn(Point3D(0, -minY3, 0), objects + 3);
 			Transform::rotate(-angle, AxisDirection::X, objects + 3);
-			Transform::moveOn(Point3D(0, min3, 0), objects + 3);
+			Transform::moveOn(Point3D(0, minY3, 0), objects + 3);
 
 			float _mx = objects[2].findMax(AxisDirection::X);
 			float _my = objects[2].findMax(AxisDirection::Y);
@@ -245,26 +260,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			for (int i = 0; i < AmountObjects - 1; i++)
 			{
-				Transform::rotate(-angle*3, AxisDirection::Y, objects + i);
+				Transform::rotate(-angle*5, AxisDirection::Y, objects + i);
 			}
 		}
 		
 		//*******************************************************************************************************************
 
-		update_view_matrix(view_matrix, angle1, angle2, r);
-		camera = new ViewPoint(angle1, angle2, r, zoom); //создаём объект камеры
-		BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, NULL, 0, 0, WHITENESS);
-		for (int i = 0; i < AmountObjects; i++)
-		{
-			projections[i] = objects[i].render(camera, view_matrix);
-			for (int j = 0; j < objects[i].getSize(); j++)
-			{
-				projections[i][j].goToScreenCoord();
-				projections[i][j].drawPolygon(&buffer);
-			}
-			delete[] projections[i];
-		}
-		BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, buffer, 0, 0, SRCCOPY);
+		globalDraw(buffer, hWnd);
 		break;
 	}
 	case WM_COMMAND:
@@ -289,40 +291,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		MoveWindow(hWnd, 0, 0, ScreenWidth, ScreenHeigth, NULL);
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-
-		BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, NULL, 0, 0, WHITENESS);
-
-		
-		camera = new ViewPoint(angle1, angle2, r, zoom); //создаём объект камеры
-		for (int i = 0; i < AmountObjects; i++)
-		{
-			projections[i] = objects[i].render(camera, view_matrix);
-			for (int j = 0; j < objects[i].getSize(); j++)
-			{
-				projections[i][j].goToScreenCoord();
-				projections[i][j].drawPolygon(&hdc);
-			}
-			delete[] projections[i];
-		}
-		// TODO: Добавьте сюда любой код прорисовки, использующий HDC...
-		//EndPaint(hWnd, &ps);
 	}
 	break;
 	case WM_KEYDOWN:
 	{
-		HDC buffer = CreateCompatibleDC(GetDC(hWnd));
-		HBITMAP fon = (HBITMAP)LoadImage(NULL, L"empty.bmp", IMAGE_BITMAP,
+		static HDC buffer = CreateCompatibleDC(GetDC(hWnd));
+		static HBITMAP fon = (HBITMAP)LoadImage(NULL, L"empty.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE);
 
 		SelectObject(buffer, fon);
-
-		
-		const float angle = 1 * PI / 180;
-
-
-		/*max2 = objects[1].findMax(AxisDirection::Y); //вращаем вокруг максимального игрика
-		min2 = objects[1].findMin(AxisDirection::Y);
-		median2 = (max2 + min2) / 2;*/
 		
 		switch (wParam) {
 			
@@ -360,22 +337,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 
-		//r = abs(r);
-		update_view_matrix(view_matrix, angle1, angle2, r);
-		camera = new ViewPoint(angle1, angle2, r, zoom); //создаём объект камеры
-		BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, NULL, 0, 0, WHITENESS);
-		for (int i = 0; i < AmountObjects; i++)
-		{
-			projections[i] = objects[i].render(camera, view_matrix);
-			for (int j = 0; j < objects[i].getSize(); j++)
-			{
-				projections[i][j].goToScreenCoord();
-				projections[i][j].drawPolygon(&buffer);
-			}
-			BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, buffer, 0, 0, SRCCOPY);
-			delete[] projections[i];
-		}
-		//BitBlt(GetDC(hWnd), 0, 0, 1600, 1200, buffer, 0, 0, SRCCOPY);
+		globalDraw(buffer, hWnd);
+
 		break;
 	}
 		case WM_DESTROY:

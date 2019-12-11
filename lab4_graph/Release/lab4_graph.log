@@ -1,22 +1,23 @@
 ﻿  lab4_graph.cpp
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(13,57): warning C4305: инициализация: усечение из "long double" в "float"
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(298,50): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(298,34): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(301,49): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(301,33): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(303,48): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(303,32): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(365,1): warning C4056: переполнение при арифметических операциях с константой с плавающей точкой
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(415,1): warning C4056: переполнение при арифметических операциях с константой с плавающей точкой
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(743,16): warning C4244: =: преобразование "int" в "float", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(15,57): warning C4305: инициализация: усечение из "long double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(255,50): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(255,34): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(258,49): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(258,33): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(260,48): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(260,32): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(314,1): warning C4056: переполнение при арифметических операциях с константой с плавающей точкой
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(364,1): warning C4056: переполнение при арифметических операциях с константой с плавающей точкой
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\RenderObject.h(661,16): warning C4244: =: преобразование "int" в "float", возможна потеря данных
 C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(15,19): warning C4305: инициализация: усечение из "double" в "float"
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(336,17): warning C4305: -=: усечение из "double" в "float"
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(341,17): warning C4305: +=: усечение из "double" в "float"
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(346,17): warning C4305: -=: усечение из "double" в "float"
-C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(351,17): warning C4305: +=: усечение из "double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(214,38): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(313,17): warning C4305: -=: усечение из "double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(318,17): warning C4305: +=: усечение из "double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(323,17): warning C4305: -=: усечение из "double" в "float"
+C:\Users\Mark_Dev\source\kurs_3D\lab4_graph\lab4_graph.cpp(328,17): warning C4305: +=: усечение из "double" в "float"
   Создание кода
-  1 of 392 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  3 of 398 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   lab4_graph.vcxproj -> C:\Users\Mark_Dev\source\kurs_3D\Release\lab4_graph.exe

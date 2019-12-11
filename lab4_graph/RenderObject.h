@@ -10,16 +10,11 @@
 #include <list>
 #include <vector>
 
-const float PI = 3.141592653589793238462643383279502884L;             //константы, говорят сами за себя
-
-const int ScreenHeigth = 900;
-const int ScreenWidth = 1600;
-
-
 using namespace std;
 
-
-
+const float PI = 3.141592653589793238462643383279502884L;             //константы, говорят сами за себя
+const int ScreenHeigth = 900;
+const int ScreenWidth = 1600;
 
 namespace Allocator       // пространство имён аллокатора памяти
 {
@@ -47,28 +42,6 @@ namespace Allocator       // пространство имён аллокатора памяти
 
 namespace Product             //пространство имён умножателя?
 {
-	inline float** multiply_matrix(float arr1[][3], int h1, int w1, float arr2[][3], int h2, int w2) {     //умножаем 2 матрицы 3х3
-
-		float** res = reinterpret_cast<float**>(Allocator::create_matrix(h1, w2, sizeof(float)));
-
-		if (h1 == w2 || h2 == w1) {
-			for (int i = 0; i < h1; i++) {
-
-
-				for (int j = 0; j < w1; j++) {
-					float* current_row = arr1[i];
-					float sum = 0;
-					for (int k = 0; k < h2; k++) {
-						sum += current_row[k] * arr2[k][j];
-					}
-					res[i][j] = sum;
-				}
-			}
-		}
-
-		return res;
-	}
-
 	inline float** multiply_matrix(float arr1[][4], int h1, int w1, float arr2[][4], int h2, int w2) {    //умножаем 2 матрицы 4х4
 
 		float** res = reinterpret_cast<float**>(Allocator::create_matrix(h1, w2, sizeof(float)));    //реинтерпретируем void** того что нам вернул аллокатор к float** (можно было по другому сделать, но так тожн норм)
@@ -87,10 +60,8 @@ namespace Product             //пространство имён умножателя?
 				}
 			}
 		}
-
 		return res;
 	}
-
 }
 
 class ViewPoint //класс точки обзора 
@@ -102,9 +73,9 @@ public:
 
 	float R;
 
-	float focus_distance = 0;
+	float focus_reverse_distance = 0;
 
-	ViewPoint(float v, float h, float dist, float focus) :fi_vert(v* PI / 180), O_hor(h* PI / 180), R(dist), focus_distance(focus)
+	ViewPoint(float v, float h, float dist, float focus) :fi_vert(v* PI / 180), O_hor(h* PI / 180), R(dist), focus_reverse_distance(focus)
 	{
 		cout << O_hor << endl;
 		cout << fi_vert << endl;
@@ -168,7 +139,7 @@ public:
 		float transform_matrix[4][4] = {
 			{1,0,0,0},
 			{0,1,0,0},
-			{0,0,1,camera->focus_distance},
+			{0,0,1,camera->focus_reverse_distance},
 			{0,0,0,1}
 		};
 
@@ -242,11 +213,6 @@ public:
 	{
 		size = s;
 		points = arr;
-
-		/*for (int i = 0; i < size; i++)
-		{
-			points[i] = res[i];
-		}*/
 	}
 
 	Point2D* render(ViewPoint* camera, float cam_matrix[4][4])       //проецируем
@@ -257,17 +223,13 @@ public:
 			temp, size);      //проецируем
 
 		delete[] temp;
-		/*for (int i = 0; i < size; i++)
-		{
-			showPoint(res[i]);
-		}*/
-
+		
 		return res;  //возаращаем результат
 	}
 
 	~_Polygon()//ненужный деструктор
 	{
-		//delete[] points;
+
 	}
 
 };
@@ -284,11 +246,6 @@ public:
 	RenderedPolygon(Point2D* res, int s) : size(s)
 	{
 		arr = res;
-
-		/*for (int i = 0; i < size; i++)
-		{
-			res[i] = res[i];
-		}*/
 	}
 
 	RenderedPolygon() {};
@@ -312,14 +269,6 @@ public:
 			this->arr[i].y = ScreenHeigth / 2 - this->arr[i].y;
 		}
 	}
-
-	/*void drawOnScreen(RenderedPolygon polygons[], int amount)
-	{
-		for (int i = 0; i < amount; i++)
-		{
-			drawSinglePolygon(polygons + i);
-		}
-	}*/
 
 	~RenderedPolygon()
 	{
@@ -461,7 +410,6 @@ public:
 		return min;
 	}
 
-
 	~RenderableObject()
 	{
 		delete[] parts;
@@ -496,13 +444,7 @@ private:
 public:
 	static void moveOn(Point3D, RenderableObject*);
 	static void rotate(float, AxisDirection, RenderableObject*);
-
 };
-
-void showPoint(Point2D point)
-{
-	cout << point.x << "  " << point.y << endl;
-}
 
 void update_view_matrix(float m[4][4], float omega, float fi_vert, float R)
 {
@@ -546,32 +488,30 @@ TypeOfObjInfo hasType(string* str)
 	return TypeOfObjInfo::Undef;
 }
 
-Point3D convertVertex(string* str)
+Point3D convertVertex(string str)
 {
 	float x = 0.0, y = 0.0, z = 0.0;
 
 	int pos[4];
-	pos[0] = str->find("  ");
+	pos[0] = str.find("  ");
 
 	if (pos[0] == -1)
 	{
-		pos[0] = str->find(" ");
+		pos[0] = str.find(" ");
 		pos[0] += 1;
 	}
-	//pos[0] += 2;
 
-	pos[1] = str->find(" ", pos[0]);
-	pos[2] = str->find(" ", pos[1] + 2);
-	pos[3] = str->length();
+	pos[1] = str.find(" ", pos[0]);
+	pos[2] = str.find(" ", pos[1] + 2);
+	pos[3] = str.length();
 
-	string x_str = str->substr(pos[0], pos[1] - pos[0]);
-	string y_str = str->substr(pos[1] + 1, pos[2] - pos[1]);
-	string z_str = str->substr(pos[2] + 1, pos[3] - pos[2]);
+	string x_str = str.substr(pos[0], pos[1] - pos[0]);
+	string y_str = str.substr(pos[1] + 1, pos[2] - pos[1]);
+	string z_str = str.substr(pos[2] + 1, pos[3] - pos[2]);
 
 	x = stof(x_str);
 	y = stof(y_str);
 	z = stof(z_str);
-	//cout << x << ' ' << y << ' ' << z << endl;
 
 	return Point3D(x, y, z);
 }
@@ -609,27 +549,6 @@ vector<int> convertPolygon(string& data)
 	return index;
 }
 
-void firstRound(ifstream& modelFile, list<Point3D>& point_list)
-{
-	char buff[buff_size];
-	while (!modelFile.eof())
-	{
-		modelFile.getline(buff, buff_size);
-
-		string current_str(buff);
-
-		if (!current_str.empty())
-		{
-			if (isVertex(const_cast<const string*>(&current_str)))
-			{
-				point_list.push_back(convertVertex(&current_str));
-			}
-		}
-	}
-	return;
-
-}
-
 template<class T>
 T* listToArray(list<T>& list)
 {
@@ -660,7 +579,7 @@ RenderableObject load_model(string filename)
 			switch (hasType(&temp))
 			{
 			case Vrtx:
-				pointsList.push_back(convertVertex(&temp));
+				pointsList.push_back(convertVertex(temp));
 				break;
 			case Plgn:
 				polygonsList.push_back(convertPolygon(temp));
@@ -671,10 +590,9 @@ RenderableObject load_model(string filename)
 
 	Point3D* pointArr = listToArray<Point3D>(pointsList);
 	pointsList.clear();
-	int vertex_amount = pointsList.size();
 	int polygon_amount = polygonsList.size();
 	
-	_Polygon* part = new _Polygon[polygonsList.size()];
+	_Polygon* part = new _Polygon[polygon_amount];
 	int counter = 0;
 
 	for (auto current_plg : polygonsList)
@@ -743,7 +661,6 @@ void Transform::rotate(float angle, AxisDirection direction, RenderableObject* o
 			m[i][j] = i == j ? 1 : 0;
 		}
 	}
-
 	switch (direction)
 	{
 	case AxisDirection::X:
@@ -765,6 +682,5 @@ void Transform::rotate(float angle, AxisDirection direction, RenderableObject* o
 		m[1][1] = cos(angle);
 		break;
 	}
-
 	_acceptMatrix(m, object);
 }
